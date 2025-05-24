@@ -4,6 +4,8 @@ import Header from '../components/Header';
 import WaitTimeBar from '../components/WaitTimeBar';
 import DiagnosisQuestionnaire from '../components/DiagnosisQuestionnaire';
 import WaitTimeResults from '../components/WaitTimeResults';
+import HospitalMap from '../components/HospitalMap';
+import HospitalGrid from '../components/HospitalGrid';
 import { WaitTimeCalculator } from '../utils/waitTimeCalculator';
 import { HospitalWaitTime, liveWaitTimes } from '../data/waitTimeData';
 
@@ -89,6 +91,24 @@ const Index = () => {
               </div>
             )}
           </div>
+        </div>
+
+        {/* Diagnosis Results and Hospital Grid */}
+        {currentDiagnosis && waitTimes.length > 0 && (
+          <div className="mt-12 space-y-8">
+            <HospitalGrid 
+              waitTimes={waitTimes}
+              fastestOption={fastestOption}
+            />
+          </div>
+        )}
+
+        {/* Hospital Map */}
+        <div className="mt-12">
+          <HospitalMap 
+            waitTimes={waitTimes}
+            currentDiagnosis={currentDiagnosis || undefined}
+          />
         </div>
         
         {/* Footer */}
