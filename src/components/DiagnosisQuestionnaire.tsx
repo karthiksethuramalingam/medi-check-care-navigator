@@ -2,7 +2,6 @@
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Progress } from '@/components/ui/progress';
 import { DiagnosisEngine } from '../utils/diagnosisEngine';
 
 interface DiagnosisQuestionnaireProps {
@@ -13,11 +12,9 @@ const DiagnosisQuestionnaire: React.FC<DiagnosisQuestionnaireProps> = ({ onDiagn
   const [engine] = useState(new DiagnosisEngine());
   const [currentQuestion, setCurrentQuestion] = useState<string | null>(engine.getBestQuestion());
   const [isComplete, setIsComplete] = useState(false);
-  const [questionCount, setQuestionCount] = useState(0);
 
   const handleAnswer = (answer: boolean) => {
     engine.answerQuestion(answer);
-    setQuestionCount(prev => prev + 1);
     
     const diagnosis = engine.getDiagnosis();
     if (diagnosis) {
@@ -28,7 +25,6 @@ const DiagnosisQuestionnaire: React.FC<DiagnosisQuestionnaireProps> = ({ onDiagn
     
     const nextQuestion = engine.getBestQuestion();
     if (!nextQuestion && engine.getCandidateCount() > 1) {
-      // No more questions but multiple candidates - take the first one
       const finalDiagnosis = "Multiple possible diagnoses - recommend professional evaluation";
       setIsComplete(true);
       onDiagnosis(finalDiagnosis);
@@ -41,14 +37,13 @@ const DiagnosisQuestionnaire: React.FC<DiagnosisQuestionnaireProps> = ({ onDiagn
     engine.reset();
     setCurrentQuestion(engine.getBestQuestion());
     setIsComplete(false);
-    setQuestionCount(0);
   };
 
   if (isComplete) {
     return (
       <Card className="w-full bg-white shadow-lg border-0">
         <CardHeader>
-          <CardTitle className="text-medical-navy text-xl font-semibold text-center">
+          <CardTitle className="text-primary text-xl font-semibold text-center">
             Assessment Complete
           </CardTitle>
         </CardHeader>
@@ -59,7 +54,7 @@ const DiagnosisQuestionnaire: React.FC<DiagnosisQuestionnaireProps> = ({ onDiagn
           <Button 
             onClick={resetQuestionnaire}
             variant="outline"
-            className="border-medical-navy text-medical-navy hover:bg-medical-navy hover:text-white"
+            className="border-primary text-primary hover:bg-primary hover:text-white"
           >
             Start New Assessment
           </Button>
@@ -72,10 +67,10 @@ const DiagnosisQuestionnaire: React.FC<DiagnosisQuestionnaireProps> = ({ onDiagn
     return (
       <Card className="w-full bg-white shadow-lg border-0">
         <CardContent className="text-center py-8">
-          <p className="text-medical-grey">No more questions available</p>
+          <p className="text-gray-600">No more questions available</p>
           <Button 
             onClick={resetQuestionnaire}
-            className="mt-4 bg-medical-navy hover:bg-medical-black"
+            className="mt-4 bg-primary hover:bg-primary/90"
           >
             Restart Assessment
           </Button>
@@ -87,23 +82,16 @@ const DiagnosisQuestionnaire: React.FC<DiagnosisQuestionnaireProps> = ({ onDiagn
   return (
     <Card className="w-full bg-white shadow-lg border-0">
       <CardHeader>
-        <CardTitle className="text-medical-navy text-xl font-semibold">
+        <CardTitle className="text-primary text-xl font-semibold">
           Medical Assessment
         </CardTitle>
-        <div className="space-y-2">
-          <div className="flex justify-between text-sm text-medical-grey">
-            <span>Question {questionCount + 1}</span>
-            <span>{engine.getCandidateCount()} possible diagnoses</span>
-          </div>
-          <Progress value={engine.getProgress()} className="h-2" />
-        </div>
       </CardHeader>
       <CardContent className="space-y-6">
-        <div className="bg-medical-light p-4 rounded-lg">
-          <h3 className="text-lg font-medium text-medical-black mb-2">
+        <div className="bg-gray-50 p-4 rounded-lg">
+          <h3 className="text-lg font-medium text-gray-900 mb-2">
             {currentQuestion}
           </h3>
-          <p className="text-sm text-medical-grey">
+          <p className="text-sm text-gray-600">
             Please answer based on your current symptoms
           </p>
         </div>
@@ -123,7 +111,7 @@ const DiagnosisQuestionnaire: React.FC<DiagnosisQuestionnaireProps> = ({ onDiagn
           </Button>
         </div>
         
-        <div className="text-xs text-medical-grey text-center">
+        <div className="text-xs text-gray-500 text-center">
           <p>⚠️ This is not a substitute for professional medical advice</p>
         </div>
       </CardContent>

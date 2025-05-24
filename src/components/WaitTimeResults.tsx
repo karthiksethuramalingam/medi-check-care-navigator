@@ -1,8 +1,10 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import { HospitalWaitTime } from '../data/waitTimeData';
+import { WaitTimeCalculator } from '../utils/waitTimeCalculator';
 
 interface WaitTimeResultsProps {
   diagnosis: string;
@@ -15,14 +17,13 @@ const WaitTimeResults: React.FC<WaitTimeResultsProps> = ({
   waitTimes, 
   fastestOption 
 }) => {
+  const [calculator] = useState(new WaitTimeCalculator());
+  const [joinedQueues, setJoinedQueues] = useState<Set<string>>(new Set());
+
   const formatTime = (minutes: number) => {
     const hours = Math.floor(minutes / 60);
     const mins = minutes % 60;
     return hours > 0 ? `${hours}h ${mins}m` : `${mins}m`;
-  };
-
-  const formatCost = (cost: number) => {
-    return cost === 0 ? 'Free' : `$${cost}`;
   };
 
   const getTypeColor = (type: string) => {
@@ -34,15 +35,38 @@ const WaitTimeResults: React.FC<WaitTimeResultsProps> = ({
     }
   };
 
+  const getSeverityBadge = (diagnosis: string) => {
+    if (diagnosis.includes('Critical') || diagnosis.includes('TBI') || diagnosis.includes('Aortic') || diagnosis.includes('Hemorrhagic')) {
+      return <Badge className="bg-red-600 text-white ml-2">CRITICAL</Badge>;
+    }
+    if (diagnosis.includes('Fracture') || diagnosis.includes('Burn') || diagnosis.includes('Pneumothorax')) {
+      return <Badge className="bg-orange-600 text-white ml-2">HIGH</Badge>;
+    }
+    if (diagnosis.includes('Sprain') || diagnosis.includes('Laceration')) {
+      return <Badge className="bg-yellow-600 text-white ml-2">LOW</Badge>;
+    }
+    return <Badge className="bg-blue-600 text-white ml-2">MEDIUM</Badge>;
+  };
+
+  const handleJoinQueue = (hospitalName: string) => {
+    const success = calculator.addToQueue(hospitalName, diagnosis);
+    if (success) {
+      setJoinedQueues(prev => new Set([...prev, hospitalName]));
+    }
+  };
+
   return (
     <div className="space-y-6">
-      <Card className="bg-medical-light border-medical-navy border-l-4">
+      <Card className="bg-blue-50 border-primary border-l-4">
         <CardHeader>
-          <CardTitle className="text-medical-navy">Diagnosis Results</CardTitle>
+          <CardTitle className="text-primary">Diagnosis Results</CardTitle>
         </CardHeader>
         <CardContent>
-          <p className="text-lg font-medium text-medical-black">{diagnosis}</p>
-          <p className="text-sm text-medical-grey mt-2">
+          <div className="flex items-center">
+            <p className="text-lg font-medium text-gray-900">{diagnosis}</p>
+            {getSeverityBadge(diagnosis)}
+          </div>
+          <p className="text-sm text-gray-600 mt-2">
             Please consult with a healthcare professional for confirmation and treatment
           </p>
         </CardContent>
@@ -70,7 +94,7 @@ const WaitTimeResults: React.FC<WaitTimeResultsProps> = ({
               </div>
               <div className="flex justify-between">
                 <span className="text-sm text-gray-600">Estimated Cost:</span>
-                <span className="font-bold">{formatCost(fastestOption.cost)}</span>
+                <span className="font-bold">{fastestOption.cost}</span>
               </div>
             </div>
           </CardContent>
@@ -79,7 +103,7 @@ const WaitTimeResults: React.FC<WaitTimeResultsProps> = ({
 
       <Card>
         <CardHeader>
-          <CardTitle className="text-medical-navy">All Available Options</CardTitle>
+          <CardTitle className="text-primary">All Available Options</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
@@ -96,16 +120,31 @@ const WaitTimeResults: React.FC<WaitTimeResultsProps> = ({
               >
                 <div className="flex justify-between items-start mb-2">
                   <div className="flex-1">
-                    <h3 className="font-medium text-medical-black">{hospital.hospital}</h3>
+                    <h3 className="font-medium text-gray-900">{hospital.hospital}</h3>
                     <Badge className={`${getTypeColor(hospital.type)} mt-1`}>
                       {hospital.type.toUpperCase()}
                     </Badge>
                   </div>
-                  {hospital === fastestOption && (
-                    <Badge className="bg-green-600 text-white">
-                      FASTEST
-                    </Badge>
-                  )}
+                  <div className="flex flex-col items-end space-y-2">
+                    {hospital === fastestOption && (
+                      <Badge className="bg-green-600 text-white">
+                        FASTEST
+                      </Badge>
+                    )}
+                    {joinedQueues.has(hospital.hospital) ? (
+                      <Badge className="bg-primary text-white">
+                        JOINED QUEUE
+                      </Badge>
+                    ) : (
+                      <Button
+                        size="sm"
+                        onClick={() => handleJoinQueue(hospital.hospital)}
+                        className="bg-primary hover:bg-primary/90 text-white"
+                      >
+                        Join Queue
+                      </Button>
+                    )}
+                  </div>
                 </div>
                 <div className="grid grid-cols-2 gap-4 text-sm">
                   <div>
@@ -114,7 +153,7 @@ const WaitTimeResults: React.FC<WaitTimeResultsProps> = ({
                   </div>
                   <div>
                     <span className="text-gray-600">Cost:</span>
-                    <p className="font-bold">{formatCost(hospital.cost)}</p>
+                    <p className="font-bold">{hospital.cost}</p>
                   </div>
                 </div>
               </div>

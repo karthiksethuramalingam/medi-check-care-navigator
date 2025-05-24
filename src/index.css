@@ -17,13 +17,13 @@
     --primary: 30 58 138;
     --primary-foreground: 255 255 255;
 
-    --secondary: 107 114 128;
-    --secondary-foreground: 255 255 255;
+    --secondary: 243 244 246;
+    --secondary-foreground: 30 58 138;
 
     --muted: 243 244 246;
     --muted-foreground: 107 114 128;
 
-    --accent: 55 65 81;
+    --accent: 30 58 138;
     --accent-foreground: 255 255 255;
 
     --destructive: 239 68 68;
@@ -59,7 +59,7 @@
 
 @layer components {
   .medical-gradient {
-    background: linear-gradient(135deg, #1e3a8a 0%, #374151 100%);
+    background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%);
   }
   
   .glow-effect {

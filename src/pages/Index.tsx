@@ -5,7 +5,7 @@ import WaitTimeBar from '../components/WaitTimeBar';
 import DiagnosisQuestionnaire from '../components/DiagnosisQuestionnaire';
 import WaitTimeResults from '../components/WaitTimeResults';
 import { WaitTimeCalculator } from '../utils/waitTimeCalculator';
-import { HospitalWaitTime } from '../data/waitTimeData';
+import { HospitalWaitTime, liveWaitTimes } from '../data/waitTimeData';
 
 const Index = () => {
   const [waitCalculator] = useState(new WaitTimeCalculator());
@@ -13,22 +13,22 @@ const Index = () => {
   const [waitTimes, setWaitTimes] = useState<HospitalWaitTime[]>([]);
   const [fastestOption, setFastestOption] = useState<HospitalWaitTime | null>(null);
   
-  // Default wait times for the bar display
-  const [defaultWaitTimes, setDefaultWaitTimes] = useState({
-    ane: 85,
-    gpe: 45,
-    private: 25
+  // Use live wait times
+  const [currentWaitTimes, setCurrentWaitTimes] = useState({
+    ane: liveWaitTimes["Wellington Hospital"],
+    gpe: liveWaitTimes["City Medical Centre"],
+    private: liveWaitTimes["Wakefield Hospital"]
   });
 
   useEffect(() => {
-    // Simulate real-time wait time updates
+    // Simulate minor wait time fluctuations
     const interval = setInterval(() => {
-      setDefaultWaitTimes(prev => ({
-        ane: Math.max(30, prev.ane + Math.floor(Math.random() * 21) - 10),
-        gpe: Math.max(15, prev.gpe + Math.floor(Math.random() * 11) - 5),
-        private: Math.max(10, prev.private + Math.floor(Math.random() * 11) - 5)
+      setCurrentWaitTimes(prev => ({
+        ane: Math.max(60, prev.ane + Math.floor(Math.random() * 11) - 5),
+        gpe: Math.max(30, prev.gpe + Math.floor(Math.random() * 11) - 5),
+        private: Math.max(15, prev.private + Math.floor(Math.random() * 11) - 5)
       }));
-    }, 30000); // Update every 30 seconds
+    }, 60000); // Update every minute
 
     return () => clearInterval(interval);
   }, []);
@@ -54,9 +54,9 @@ const Index = () => {
           {/* Left Column - Wait Time Bar */}
           <div className="lg:col-span-1">
             <WaitTimeBar 
-              aneWait={defaultWaitTimes.ane}
-              gpeWait={defaultWaitTimes.gpe}
-              privateWait={defaultWaitTimes.private}
+              aneWait={currentWaitTimes.ane}
+              gpeWait={currentWaitTimes.gpe}
+              privateWait={currentWaitTimes.private}
             />
           </div>
           
@@ -75,11 +75,11 @@ const Index = () => {
               />
             ) : (
               <div className="bg-white rounded-lg shadow-lg p-8 text-center">
-                <div className="text-medical-grey">
-                  <div className="w-16 h-16 mx-auto mb-4 bg-medical-light rounded-full flex items-center justify-center">
+                <div className="text-gray-600">
+                  <div className="w-16 h-16 mx-auto mb-4 bg-blue-50 rounded-full flex items-center justify-center">
                     <span className="text-2xl">🏥</span>
                   </div>
-                  <h3 className="text-lg font-medium text-medical-black mb-2">
+                  <h3 className="text-lg font-medium text-gray-900 mb-2">
                     Complete Assessment
                   </h3>
                   <p className="text-sm">
@@ -92,7 +92,7 @@ const Index = () => {
         </div>
         
         {/* Footer */}
-        <footer className="mt-16 text-center text-medical-grey text-sm">
+        <footer className="mt-16 text-center text-gray-600 text-sm">
           <div className="border-t border-gray-200 pt-8">
             <p className="mb-2">
               <strong>Disclaimer:</strong> This tool is for informational purposes only and does not constitute medical advice.
