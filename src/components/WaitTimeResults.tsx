@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { HospitalWaitTime } from '../data/waitTimeData';
+import { HospitalWaitTime, treatmentDurations } from '../data/waitTimeData';
 import { WaitTimeCalculator } from '../utils/waitTimeCalculator';
 
 interface WaitTimeResultsProps {
@@ -34,19 +34,26 @@ const WaitTimeResults: React.FC<WaitTimeResultsProps> = ({
       default: return 'bg-gray-100 text-gray-800';
     }
   };
+  const getSeverity = (diagnosis: string) => {
+    const match = treatmentDurations.find(d => diagnosis.includes(d.injuryType));
+    return match ? match.severity : 'unknown';
+  };
 
   const getSeverityBadge = (diagnosis: string) => {
-    if (diagnosis.includes('Critical') || diagnosis.includes('TBI') || diagnosis.includes('Aortic') || diagnosis.includes('Hemorrhagic')) {
-      return <Badge className="bg-red-600 text-white ml-2">CRITICAL</Badge>;
-    }
-    if (diagnosis.includes('Fracture') || diagnosis.includes('Burn') || diagnosis.includes('Pneumothorax')) {
-      return <Badge className="bg-orange-600 text-white ml-2">HIGH</Badge>;
-    }
-    if (diagnosis.includes('Sprain') || diagnosis.includes('Laceration')) {
-      return <Badge className="bg-yellow-600 text-white ml-2">LOW</Badge>;
-    }
-    return <Badge className="bg-blue-600 text-white ml-2">MEDIUM</Badge>;
-  };
+    const severity = getSeverity(diagnosis);
+    switch (severity) {
+      case 'critical':
+        return <Badge className="bg-red-600 text-white ml-2">CRITICAL</Badge>;
+      case 'high':
+        return <Badge className="bg-orange-600 text-white ml-2">HIGH</Badge>;
+      case 'medium':
+        return <Badge className="bg-blue-600 text-white ml-2">MEDIUM</Badge>;
+      case 'low':
+        return <Badge className="bg-yellow-600 text-white ml-2">LOW</Badge>;
+      default:
+        return <Badge className="bg-gray-400 text-white ml-2">UNKNOWN</Badge>;
+      }
+    };
 
   const handleJoinQueue = (hospitalName: string) => {
     const success = calculator.addToQueue(hospitalName, diagnosis);
