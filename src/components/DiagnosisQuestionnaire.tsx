@@ -53,8 +53,8 @@ const DiagnosisQuestionnaire: React.FC<DiagnosisQuestionnaireProps> = ({ onDiagn
           </p>
           <Button 
             onClick={resetQuestionnaire}
-            variant="outline"
-            className="border-primary text-primary hover:bg-primary hover:text-white"
+            //variant="outline"
+            className="bg-blue-50 text-primary hover:bg-primary hover:text-white"
           >
             Start New Assessment
           </Button>

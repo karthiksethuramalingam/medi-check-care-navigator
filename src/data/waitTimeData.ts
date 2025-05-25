@@ -24,10 +24,10 @@ export const defaultHospitals = [
 
 // Live wait times (simulating real-time data)
 export const liveWaitTimes = {
-  "Wellington Hospital": 85,
-  "Wakefield Hospital": 25,
-  "City Medical Centre": 45,
-  "Wellington After Hours Medical Centre": 35,
+  "Wellington Hospital": 324,
+  "Wakefield Hospital": 118,
+  "City Medical Centre": 75,
+  "Wellington After Hours Medical Centre": 265,
   "Wakefield Health Centre": 40
 };
 
@@ -70,7 +70,8 @@ export const treatmentDurations: TreatmentDuration[] = [
   { injuryType: "Respiratory Injuries: Airway Obstruction", appointmentTime: 30, standardDeviation: 10, severity: 'critical' },
   { injuryType: "Respiratory Injuries: Aspiration", appointmentTime: 45, standardDeviation: 15, severity: 'high' },
   { injuryType: "Respiratory Injuries: Smoke Inhalation", appointmentTime: 60, standardDeviation: 20, severity: 'high' },
-  { injuryType: "Respiratory Injuries: Tracheal Rupture", appointmentTime: 120, standardDeviation: 35, severity: 'critical' }
+  { injuryType: "Respiratory Injuries: Tracheal Rupture", appointmentTime: 120, standardDeviation: 35, severity: 'critical' },
+  { injuryType: "No Injury", appointmentTime: 0, standardDeviation: 0, severity: 'low' }
 ];
 
 export const hospitalCosts = {

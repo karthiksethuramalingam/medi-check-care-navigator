@@ -5,10 +5,10 @@
 
 @layer base {
   :root {
-    --background: 248 250 252;
+    --background: 225 10 255;
     --foreground: 17 24 39;
-
-    --card: 255 255 255;
+    --temp: 248 250 252;
+    --fcard: 255 255 255;
     --card-foreground: 17 24 39;
 
     --popover: 255 255 255;

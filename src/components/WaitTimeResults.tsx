@@ -101,12 +101,12 @@ const WaitTimeResults: React.FC<WaitTimeResultsProps> = ({
         </Card>
       )}
 
-      <Card>
+      <Card className="bg-blue-50 shadow-lg border-gray-200">
         <CardHeader>
           <CardTitle className="text-primary">All Available Options</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="space-y-4">
+          <div className="flex flex-row gap-4 w-full overflow-x-auto">
             {waitTimes
               .sort((a, b) => a.waitMinutes - b.waitMinutes)
               .map((hospital, index) => (
