@@ -65,12 +65,4 @@
   .glow-effect {
     box-shadow: 0 0 20px rgba(30, 58, 138, 0.3);
   }
-
-  .navy-gradient {
-    background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
-  }
-
-  .highlight-gradient {
-    background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%);
-  }
 }
